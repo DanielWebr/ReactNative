@@ -1,17 +1,18 @@
 import React from "react";
 import { StyleSheet, View, Text, Image, ImageBackground } from "react-native";
+import { Movie } from "./Movie";
 
-export default function MovieItem({ movie }) {
+export default function MovieItem(movie) {
+  console.log("\n\n\n");
   let uri =
-    "https://raw.githubusercontent.com/RyanHemrick/star_wars_movie_app/master/public/images/star_wars_episode_" +
-    movie.episode_number +
-    "_poster.png";
+    "https://raw.githubusercontent.com/RyanHemrick/star_wars_movie_app/master/public/images/" +
+    movie.poster;
   return (
     <View style={styles.item}>
       <Image style={styles.image} source={{ uri: uri }} />
       <View style={styles.tytleView}>
         <Text style={styles.title}>{movie.title}</Text>
-        <Text style={styles.titleNumber}>{movie.episode_number}</Text>
+        <Text style={styles.titleNumber}>{movie.episodeNumber}</Text>
       </View>
     </View>
   );

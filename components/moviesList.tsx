@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
   Text,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  ListRenderItemInfo
 } from "react-native";
 import MovieItem from "./movieItem";
+import { Movie } from "./Movie";
 
 const sorting = {
   asc: "Descending sort",
@@ -15,31 +17,54 @@ const sorting = {
 };
 
 export default function MoviesList() {
-  console.log("jds1");
   const [isLoading, setLoading] = useState(true);
   const [sort, setSort] = useState("asc");
-  const [movies, setMovies] = useState("");
-
-
+  const [movies, setMovies] = useState(Array<Movie>());
 
   useEffect(() => {
-    console.log("jds");
     let url =
       "https://raw.githubusercontent.com/RyanHemrick/star_wars_movie_app/master/movies.json";
     fetch(url)
       .then(response => response.json())
       .then(responseJson => {
         setLoading(false);
-        setMovies(responseJson.movies);
+        let movies: Array<Movie> = responseJson.movies.map(movie =>
+          itemToMovie(movie)
+        );
+        setMovies(movies);
       })
       .catch(error => {
         console.error(error);
       });
-  },[]);
+  }, []);
 
-  const reverseMoviesArray = () => {
+  const reverseMoviesArray = (): void => {
     setSort(sort == "asc" ? "desc" : "asc");
     setMovies(movies.slice().reverse());
+  };
+
+  const movieToMovieItem = (movie: ListRenderItemInfo<Movie>): JSX.Element => {
+    return (
+      <MovieItem
+        title={movie.item.title}
+        description={movie.item.description}
+        episodeNumber={movie.item.episodeNumber}
+        mainCharacters={movie.item.mainCharacters}
+        heroImage={movie.item.heroImage}
+        poster={movie.item.poster}
+      />
+    );
+  };
+
+  const itemToMovie = (movieItem): Movie => {
+    return new Movie(
+      movieItem.title,
+      movieItem.episode_number,
+      movieItem.main_characters,
+      movieItem.description,
+      movieItem.poster,
+      movieItem.hero_image
+    );
   };
 
   if (isLoading) {
@@ -55,12 +80,9 @@ export default function MoviesList() {
       <FlatList
         style={{ marginLeft: 10, marginRight: 10 }}
         data={movies}
-        renderItem={({ item }) => <MovieItem movie={item} />}
-        keyExtractor={item => {
-          return item.episode_number;
-        }}
+        renderItem={movieToMovieItem}
+        keyExtractor={movie => movie.episodeNumber.toString()}
       />
-
       <TouchableOpacity style={styles.button} onPress={reverseMoviesArray}>
         <Text style={styles.buttonText}> {sorting[sort]} </Text>
       </TouchableOpacity>
