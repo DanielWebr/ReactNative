@@ -2,8 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text, Image, ImageBackground } from "react-native";
 import { Movie } from "./Movie";
 
-export default function MovieItem(movie) {
-  console.log("\n\n\n");
+export default function MovieItem(movie:Movie) {
   let uri =
     "https://raw.githubusercontent.com/RyanHemrick/star_wars_movie_app/master/public/images/" +
     movie.poster;
